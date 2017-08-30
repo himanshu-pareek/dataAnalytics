@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"cars\"\nauthor: \"HImanshu Pareek\"\ndate: \"August 27, 2017\"\noutput: html_document\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n## Computing means for given data\n\nGiven data is for distances covered by various cars with various speeds.\n\nreading data into R\nfilename is \"CARS.csv\"\n\n```{r reading data into R from excel file}\nfilename <- \"CARS.csv\"\ncars <- read.csv(filename, row.names = 1, na.strings = c(\"Not Available\", \"NOT AVAILABLE\", \"NULL\", \"NA\", \"na\", \"not available\", \"-\", \"_\", \"X\"))\n\nhead (cars)\n```\n\n \nRemoving na values (if any)\n\n```{r removing na values (if any)}\ncars <- cars[complete.cases(cars), ]\nhead (cars)\n```\n\n \nWe will group data with respect to speed of the car\n\n```{r deleting id column}\nlibrary(dplyr)\ncars <- group_by (cars,speed)\nhead (cars)\n```\n\n \nWe will thtan take average of speeds in each group\n\n```{r Creating random indices for sample}\ncars <- summarize(cars, mean_dist = mean(dist))\nhead (cars)\n```\n\n \nNow we will calculate weighted means (AM, GM and HM)\n \n\n```{r Select sample from iris data}\nweighted_am <- weighted.mean(cars$mean_dist, cars$speed)\nweighted_gm <- exp(weighted.mean(log(cars$mean_dist), cars$speed))\nweighted_hm <- 1 / (weighted.mean(1 / (cars$mean_dist), cars$speed))\n\n```\n\nprinting weighted am, gm and hm\n \n\n```{r none}\nsprintf (\n    \"%s  = %f\",\n    c(\"WEIGHTED AM\", \"WEIGHTED GM\", \"WEIGHTED HM\"),\n    c(weighted_am, weighted_gm, weighted_hm)\n)\n```\n\n \nHere range and observations both are different, so we will consider GM. We can further visualize data using plot\n\n```{r group sample_iris by Species}\nplot (\n    cars$speed,\n    cars$mean_dist,\n    main = \"Car meandist v/s speed\",\n    xlab = \"Speed of car\",\n    ylab = \"Mean distance\"\n)\n```\n\n \nWe can see that relation between mean distance and speed is approximately linear\n",
+    "created" : 1503781674356.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2636386163",
+    "id" : "1F1EE850",
+    "lastKnownWriteTime" : 1503782523,
+    "last_content_update" : 1503782523514,
+    "path" : "E:/data_analytics/ProjectAssignment01/CARS/report.Rmd",
+    "project_path" : "report.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

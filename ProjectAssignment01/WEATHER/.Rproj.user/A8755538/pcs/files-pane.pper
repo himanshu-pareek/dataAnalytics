@@ -1,0 +1,9 @@
+{
+    "path" : "E:/data_analytics/ProjectAssignment01/WEATHER",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

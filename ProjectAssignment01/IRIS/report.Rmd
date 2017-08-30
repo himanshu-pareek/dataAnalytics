@@ -1,0 +1,125 @@
+---
+title: "iris"
+author: "HImanshu Pareek"
+date: "August 27, 2017"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Comparing population and sample mean and variance
+
+filename is "IRIS.xlsx"
+Reading data into R from excel file using readxl package
+
+```{r reading data into R from excel file}
+filename <- "IRIS.xlsx"
+
+library(readxl)
+
+iris <- read_excel (
+    filename,
+    na = c("Not Available", "not available", "NOT AVAILABLE", "na", "NA", "null", "NULL", "-", "_", "?"))
+head (iris)
+```
+
+ 
+Removing na values (if any)
+
+```{r removing na values (if any)}
+iris <- na.omit(iris)
+head (iris)
+```
+
+ 
+Deleting id column (because it is duplicate in our data)
+
+```{r deleting id column}
+iris <- subset(iris, select = -Id)
+head (iris)
+```
+
+ 
+Creating random indices for sample
+
+```{r Creating random indices for sample}
+sample_index <- sample.int(nrow(iris), 50)
+head (sample_index)
+```
+
+ 
+Select sample from iris data
+ 
+
+```{r Select sample from iris data}
+sample_iris <- iris[sample_index, ]
+head (sample_iris)
+
+```
+
+ 
+Grouping sample_iris by Species
+
+```{r group sample_iris by Species}
+library(dplyr)
+sample_iris <- group_by (sample_iris, Species)
+head (sample_iris)
+```
+
+ 
+Summarizing data to get mean and variances
+
+```{r summrize data to get mean and variances}
+sample_iris_summary <- summarize(sample_iris, 
+                                 sl_mean = mean(SepalLengthCm),
+                                 sw_mean = mean(SepalWidthCm),
+                                 pl_mean = mean(PetalLengthCm),
+                                 pw_mean = mean(PetalWidthCm),
+                                 sl_var = var(SepalLengthCm),
+                                 sw_var = var(SepalWidthCm),
+                                 pl_var = var(PetalLengthCm),
+                                 pw_var = var(PetalWidthCm)
+                            )
+
+```
+
+ 
+Grouping original iris data
+
+```{r Grouping of original data}
+iris_group <- group_by(iris, Species)
+head (iris_group)
+```
+
+ 
+Summarizing original data
+
+
+```{r Summarizing original data}
+iris_summary <- summarize(iris_group, 
+                                 sl_mean = mean(SepalLengthCm),
+                                 sw_mean = mean(SepalWidthCm),
+                                 pl_mean = mean(PetalLengthCm),
+                                 pw_mean = mean(PetalWidthCm),
+                                 sl_var = var(SepalLengthCm),
+                                 sw_var = var(SepalWidthCm),
+                                 pl_var = var(PetalLengthCm),
+                                 pw_var = var(PetalWidthCm)
+)
+
+```
+
+ 
+Printing the summary
+
+```{r printing the summary}
+sample_iris_summary
+iris_summary
+
+```
+
+
+Here we can see that mean and variance of sample iris data (n = 50) and original iris data (n = 150) are very much similar. But if we look closer we see that Variance of PetalWidth for population is lesser than that for sample baut all other variances are somewhat greater for population data.
+

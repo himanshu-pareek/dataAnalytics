@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# loading data into R\n# filename is \"EARTHQUAKE.xlsx\"\nfilename <- \"EARTHQUAKE.xlsx\"\n\nlibrary(readxl)\nlibrary(dplyr)\n\nearthquakes <- read_excel(filename, na = c(\"Not Available\", \"not available\", \"NOT AVAILABLE\", \"na\", \"NA\", \"-\", \"_\", \"null\", \"NULL\"))\nhead (earthquakes)\n\n# number of discrepancy is number of rows with na values\n# this can be calculated by is.na() function\ndataOfNAValues <- earthquakes[rowSums(is.na(earthquakes)) > 0,]\nhead (dataOfNAValues)\n\n# Here, dataOfNAValues has 0 rows\n# means, there is not any discrepancy in our cata\n# If we somehow forgot to keep names of possible na strings while\n# reading excel file, we have to use omit function to \n# remove all na or not suitable values\nearthquakes <- na.omit(earthquakes)\nhead (earthquakes)\n\n# We will rename columns to ease of writing\ncolNames <- c(\"time\", \"lat\", \"long\", \"depth\", \"mag\")\ncolnames(earthquakes) <- colNames\nhead (earthquakes)\n\n# Now, we will calculate 5 point summary for depth and mag\nnew_data <- subset(earthquakes, select = c(depth, mag))\n\n# Boxplot before removing outliers\nboxplot(new_data$depth, main = \"Boxplot for depth in Km (Before removing outliers)\")\nboxplot(new_data$mag, main = \"Boxplot for magnitude (Before removing outliers)\")\n\n# Calculating 5 points\nquantileDepth <- quantile(new_data$depth, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileMag <- quantile(new_data$mag, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileDepth\nquantileMag\n\n# Calculating minimum and maximum of depth and magnitude\nq1Depth <- quantileDepth[2]\nq3Depth <- quantileDepth[4]\nq1Mag <- quantileMag[2]\nq3Mag <- quantileMag[4]\n\nIQRDepth <- q3Depth - q1Depth\nIQRMag <- q3Mag - q1Mag\n\nminDepth <- q1Depth - (1.5 * IQRDepth)\nmaxDepth <- q3Depth + (1.5 * IQRDepth)\nminMag <- q1Mag - (1.5 * IQRMag)\nmaxMag <- q3Mag + (1.5 * IQRMag)\n\nsprintf(\"Range of %s should be %f - %f\\n\", c(\"Depth\", \"Magnitude\"), c(minDepth, minMag), c(maxDepth, maxMag))\n\n# Now, we will remove data below minimum limit\n# and above maximum limit\nnew_data <- filter(new_data, depth >= minDepth & depth <= maxDepth & mag >= minMag & mag <= maxMag)\n\n# Again we will plot boxplot and calculate the 5 point summary\nsprintf(\"After removing outliers\")\n# Boxplot after removing outliers\nboxplot(new_data$depth, main = \"Boxplot for depth in Km (After removing outliers)\")\nboxplot(new_data$mag, main = \"Boxplot for magnitude (After removing outliers)\")\n\n# Calculating 5 points summary\nquantileDepth <- quantile(new_data$depth, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileMag <- quantile(new_data$mag, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileDepth\nquantileMag\n\n# We can see that after removing outliers, boxplot is much more symmetric\n# and we don't have any data in outliers\n# so that we can accept all the data in new_data\n\n",
+    "created" : 1503771604051.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4205577444",
+    "id" : "88059E1",
+    "lastKnownWriteTime" : 1503801372,
+    "last_content_update" : 1503801372085,
+    "path" : "E:/data_analytics/ProjectAssignment01/EARTHQUAKE/main.R",
+    "project_path" : "main.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

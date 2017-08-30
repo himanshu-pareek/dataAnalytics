@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# reading data into R\n# filename is \"CARS.csv\"\nfilename <- \"CARS.csv\"\ncars <- read.csv(filename, row.names = 1, na.strings = c(\"Not Available\", \"NOT AVAILABLE\", \"NULL\", \"NA\", \"na\", \"not available\", \"-\", \"_\", \"X\"))\n\n# removing na values from data\ncars <- cars[complete.cases(cars), ]\n\n# import dplyr package\nlibrary(dplyr)\n\n# We will group data with respect to speed of the car\ncars <- group_by (cars,speed)\n\n# We will thtan take average of speeds in each group\ncars <- summarize(cars, mean_dist = mean(dist))\n\n# Now we will calculate weighted means (AM, GM and HM)\nweighted_am <- weighted.mean(cars$mean_dist, cars$speed)\nweighted_gm <- exp(weighted.mean(log(cars$mean_dist), cars$speed))\nweighted_hm <- 1 / (weighted.mean(1 / (cars$mean_dist), cars$speed))\n\n# printing weighted am, gm and hm\nsprintf (\n    \"%s  = %f\",\n    c(\"WEIGHTED AM\", \"WEIGHTED GM\", \"WEIGHTED HM\"),\n    c(weighted_am, weighted_gm, weighted_hm)\n)\n\n# Here range and observations both are different, so we will consider GM\n# We can further visualize data using plot\nplot (\n    cars$speed,\n    cars$mean_dist,\n    main = \"Car meandist v/s speed\",\n    xlab = \"Speed of car\",\n    ylab = \"Mean distance\"\n)\n\n# We can see that relation between mean distance and speed \n# is approximately linear\n",
+    "created" : 1503768110369.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1870631456",
+    "id" : "CDCA02D1",
+    "lastKnownWriteTime" : 1503771322,
+    "last_content_update" : 1503771322775,
+    "path" : "E:/data_analytics/ProjectAssignment01/CARS/main.R",
+    "project_path" : "main.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,87 @@
+---
+title: "cars"
+author: "HImanshu Pareek"
+date: "August 27, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Computing means for given data
+
+Given data is for distances covered by various cars with various speeds.
+
+reading data into R
+filename is "CARS.csv"
+
+```{r reading data into R from excel file}
+filename <- "CARS.csv"
+cars <- read.csv(filename, row.names = 1, na.strings = c("Not Available", "NOT AVAILABLE", "NULL", "NA", "na", "not available", "-", "_", "X"))
+
+head (cars)
+```
+
+ 
+Removing na values (if any)
+
+```{r removing na values (if any)}
+cars <- cars[complete.cases(cars), ]
+head (cars)
+```
+
+ 
+We will group data with respect to speed of the car
+
+```{r deleting id column}
+library(dplyr)
+cars <- group_by (cars,speed)
+head (cars)
+```
+
+ 
+We will thtan take average of speeds in each group
+
+```{r Creating random indices for sample}
+cars <- summarize(cars, mean_dist = mean(dist))
+head (cars)
+```
+
+ 
+Now we will calculate weighted means (AM, GM and HM)
+ 
+
+```{r Select sample from iris data}
+weighted_am <- weighted.mean(cars$mean_dist, cars$speed)
+weighted_gm <- exp(weighted.mean(log(cars$mean_dist), cars$speed))
+weighted_hm <- 1 / (weighted.mean(1 / (cars$mean_dist), cars$speed))
+
+```
+
+printing weighted am, gm and hm
+ 
+
+```{r none}
+sprintf (
+    "%s  = %f",
+    c("WEIGHTED AM", "WEIGHTED GM", "WEIGHTED HM"),
+    c(weighted_am, weighted_gm, weighted_hm)
+)
+```
+
+ 
+Here range and observations both are different, so we will consider GM. We can further visualize data using plot
+
+```{r group sample_iris by Species}
+plot (
+    cars$speed,
+    cars$mean_dist,
+    main = "Car meandist v/s speed",
+    xlab = "Speed of car",
+    ylab = "Mean distance"
+)
+```
+
+ 
+We can see that relation between mean distance and speed is approximately linear

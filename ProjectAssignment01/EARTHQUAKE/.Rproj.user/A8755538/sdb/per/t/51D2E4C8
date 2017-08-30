@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"earthquake\"\nauthor: \"HImanshu Pareek\"\ndate: \"August 27, 2017\"\noutput: word_document\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n## Box plot of EARTHQUAKE data\nloading data into R. Filename is \"EARTHQUAKE.xlsx\"\n\n```{r code1}\nfilename <- \"EARTHQUAKE.xlsx\"\n\nlibrary(readxl)\nlibrary(dplyr)\n\nearthquakes <- read_excel(filename, na = c(\"Not Available\", \"not available\", \"NOT AVAILABLE\", \"na\", \"NA\", \"-\", \"_\", \"null\", \"NULL\"))\nhead (earthquakes)\n```\n\nnumber of discrepancy is number of rows with na values. This can be calculated by is.na() function\n\n```{r code2}\ndataOfNAValues <- earthquakes[rowSums(is.na(earthquakes)) > 0,]\nhead (dataOfNAValues)\n```\n\nHere, dataOfNAValues has 0 rows. It means, there is not any discrepancy in our cata. If we somehow forgot to keep names of possible na strings while reading excel file, we have to use omit function to remove all na or not suitable values.\n\n```{r code3}\nearthquakes <- na.omit(earthquakes)\nhead (earthquakes)\n```\n\nWe will rename columns to ease of writing\n\n```{r code4}\ncolNames <- c(\"time\", \"lat\", \"long\", \"depth\", \"mag\")\ncolnames(earthquakes) <- colNames\nhead (earthquakes)\n```\n\nSubsetting depth and magnitude columns.\n\n```{r code5}\nnew_data <- subset(earthquakes, select = c(depth, mag))\nhead (new_data)\n```\n\nBoxplot before removing outliers\n\n```{r code6}\nboxplot(new_data$depth, main = \"Boxplot for depth in Km (Before removing outliers)\")\nboxplot(new_data$mag, main = \"Boxplot for magnitude (Before removing outliers)\")\n\n```\n\nCalculating 5 point summary\n\n```{r code7}\nquantileDepth <- quantile(new_data$depth, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileMag <- quantile(new_data$mag, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileDepth\nquantileMag\n\n```\n\nCalculating minimum and maximum of depth and magnitude to be used.\n\n```{r code8}\nq1Depth <- quantileDepth[2]\nq3Depth <- quantileDepth[4]\nq1Mag <- quantileMag[2]\nq3Mag <- quantileMag[4]\n\nIQRDepth <- q3Depth - q1Depth\nIQRMag <- q3Mag - q1Mag\n\nminDepth <- q1Depth - (1.5 * IQRDepth)\nmaxDepth <- q3Depth + (1.5 * IQRDepth)\nminMag <- q1Mag - (1.5 * IQRMag)\nmaxMag <- q3Mag + (1.5 * IQRMag)\n\nsprintf(\"Range of %s should be %f - %f\\n\", c(\"Depth\", \"Magnitude\"), c(minDepth, minMag), c(maxDepth, maxMag))\n\n```\n\nNow, we will remove data below minimum limit and above maximum limit.\n\n```{r code9}\nnew_data <- filter(new_data, depth >= minDepth & depth <= maxDepth & mag >= minMag & mag <= maxMag)\n```\n\nBoxplot after removing outliers\n\n```{r code10}\nsprintf(\"After removing outliers\")\nboxplot(new_data$depth, main = \"Boxplot for depth in Km (After removing outliers)\")\nboxplot(new_data$mag, main = \"Boxplot for magnitude (After removing outliers)\")\n```\n\nCalculating 5 point summary\n\n```{r code11}\nquantileDepth <- quantile(new_data$depth, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileMag <- quantile(new_data$mag, probs = c(0, 0.25, 0.50, 0.75, 1.0))\nquantileDepth\nquantileMag\n\n```\n\nWe can see that after removing outliers, boxplot is much more symmetric and we don't have any data in outliers so that we can accept all the data in new_data.\n",
+    "created" : 1503801383218.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1488287481",
+    "id" : "51D2E4C8",
+    "lastKnownWriteTime" : 1503802298,
+    "last_content_update" : 1503802298499,
+    "path" : "E:/data_analytics/ProjectAssignment01/EARTHQUAKE/report.Rmd",
+    "project_path" : "report.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
